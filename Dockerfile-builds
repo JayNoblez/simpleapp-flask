@@ -1,15 +1,15 @@
 FROM --platform=linux/arm64/v8 ubuntu:latest
 
-RUN apt-get update
-RUN apt-get -qq -y install curl
+RUN apt-get update && apt-get -qq -y install curl wget
 RUN curl -LO "https://dl.k8s.io/release/v1.23.0/bin/linux/arm64/kubectl"
 RUN install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
+WORKDIR /tmp
 # install yq
-RUN wget https://github.com/mikefarah/yq/releases/download/v4.16.2/yq_linux_arm64 -O /tmp/yq
-RUN chmod +x /tmp/yq && sudo mv /tmp/yq /usr/bin/yq
+RUN wget https://github.com/mikefarah/yq/releases/download/v4.16.2/yq_linux_arm64 -O yq
+RUN chmod +x yq && mv yq /usr/bin/yq
 
 # install helm
-RUN cd /tmp && curl -LO https://get.helm.sh/helm-v3.7.2-linux-arm64.tar.gz
+RUN curl -LO https://get.helm.sh/helm-v3.7.2-linux-arm64.tar.gz
 RUN tar -zxvf helm-v3.7.2-linux-arm64.tar.gz
-RUN sudo mv linux-arm64/helm /usr/local/bin/helm
+RUN mv linux-arm64/helm /usr/local/bin/helm
