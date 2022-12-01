@@ -4,7 +4,8 @@ jobs:
   build:
     # Use `docker:stable` as the Docker container to run this job in
     docker:
-      - image: docker:stable
+      - image: arm64v8/ubuntu
+    resource_class: small
 
     steps:
       # Checkout the repository files
