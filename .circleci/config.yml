@@ -5,7 +5,7 @@ jobs:
     # Use `docker:stable` as the Docker container to run this job in
     docker:
       - image: multiarch/ubuntu-core:arm64-xenial
-    resource_class: Medium+
+    resource_class: medium+
 
     steps:
       # Checkout the repository files
