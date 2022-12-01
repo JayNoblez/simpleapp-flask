@@ -1,6 +1,7 @@
 FROM --platform=linux/arm64/v8 ubuntu:latest
 
-RUN apt-get install curl
+RUN apt-get update
+RUN apt-get -qq -y install curl
 RUN curl -LO "https://dl.k8s.io/release/v1.23.0/bin/linux/arm64/kubectl"
 RUN install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
