@@ -4,7 +4,7 @@ jobs:
   build:
     # Use `docker:stable` as the Docker container to run this job in
     docker:
-      - image: arm64v8/ubuntu
+      - image: multiarch/ubuntu-core:arm64-xenial
     resource_class: small
 
     steps:
@@ -15,10 +15,12 @@ jobs:
       - setup_remote_docker
 
       # Build the hello world image
-      - run:
+      - run: 
           name: Build Docker image
-          command: docker build --tag simpleapp .
-      
+          command: |
+            docker run --rm --privileged multiarch/qemu-user-static:register
+            docker build --tag simpleapp .
+
       - run: 
           name: Inspect image architecture
           command: docker image inspect simpleapp | grep -i arch
