@@ -4,7 +4,7 @@ jobs:
   build:
     # Use `docker:stable` as the Docker container to run this job in
     docker:
-      - image: multiarch/ubuntu-core:arm64-xenial
+      - image: docker:stable
     resource_class: medium+
 
     steps:
