@@ -4,7 +4,7 @@ jobs:
   build:
     # Use `docker:stable` as the Docker container to run this job in
     docker:
-      - image: jaynoblez/simple-k8s-tools:2
+      - image: jaynoblez/simple-k8s-tools:3
     resource_class: medium+
 
     steps:

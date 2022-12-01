@@ -1,6 +1,7 @@
 FROM ubuntu:latest
 
-RUN apt-get update && apt-get -qq -y install curl wget
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+RUN apt-get -qq -y install curl wget docker
 RUN curl -LO "https://dl.k8s.io/release/v1.23.0/bin/linux/arm64/kubectl"
 RUN install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
