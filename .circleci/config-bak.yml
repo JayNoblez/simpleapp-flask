@@ -1,0 +1,48 @@
+version: 2.1
+
+jobs:
+  build:
+    # Use `docker:stable` as the Docker container to run this job in
+    docker:
+      - image: jaynoblez/simple-k8s-tools:4
+    resource_class: medium+
+
+    steps:
+      # Checkout the repository files
+      - checkout
+
+      - restore_cache:
+          keys:
+            - kube-deps-{{ checksum ".circleci/scripts/03_install_kube_tools.sh" }}
+            # fallback to using the latest cache if no exact match is found
+            - kube-deps-
+      - run:
+          name: "Install Kubectl and Helm"
+          command: sh .circleci/scripts/03_install_kube_tools.sh
+      - save_cache:
+          key: kube-deps-{{ checksum ".circleci/scripts/03_install_kube_tools.sh" }}
+          paths:
+            - vendor/kubetools
+
+      # Set up a separate Docker environment to run `docker` commands in
+      - setup_remote_docker
+
+      # Build the hello world image
+      - run:
+          name: Build Docker image
+          command: |
+            docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+            docker build -f Dockerfile --tag simpleapp .
+            helm version
+            kubectl version --client
+            yq -h
+
+      - run:
+          name: Inspect image architecture
+          command: docker image inspect simpleapp | grep -i arch
+
+workflows:
+  version: 2
+  build-push:
+    jobs:
+      - build

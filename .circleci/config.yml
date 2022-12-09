@@ -3,30 +3,51 @@ version: 2.1
 jobs:
   build:
     # Use `docker:stable` as the Docker container to run this job in
-    docker:
-      - image: jaynoblez/simple-k8s-tools:4
-    resource_class: medium+
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: arm.medium
 
     steps:
       # Checkout the repository files
       - checkout
 
-      # Set up a separate Docker environment to run `docker` commands in
-      - setup_remote_docker
+      - run:
+          name: "Install Kubectl and Helm"
+          command: sh ./kube.sh
+
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /caches/app.tar | true
+
+      - run:
+          name: check images
+          command: docker image ls
 
       # Build the hello world image
-      - run: 
+      - run:
           name: Build Docker image
           command: |
-            docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-            docker build -f Dockerfile --tag simpleapp .
+            docker build --cache-from=app -f Dockerfile --tag app .
             helm version
             kubectl version --client
             yq -h
 
-      - run: 
-          name: Inspect image architecture
-          command: docker image inspect simpleapp | grep -i arch
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/app.tar app
+
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/app.tar
 
 workflows:
   version: 2
