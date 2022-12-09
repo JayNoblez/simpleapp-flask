@@ -13,14 +13,14 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-kubetools-{{ checksum ".circleci/kube-tools.sh" }}
+            - v1-kubetools
 
       - run:
           name: "Install Kubectl and Helm"
           command: sh .circleci/kube-tools.sh
 
       - save_cache:
-          key: v1-kubetools-{{ checksum ".circleci/kube-tools.sh" }}
+          key: v1-kubetools-{{ epoch }}
           paths:
             - /tmp/tools/kubectl
             - /tmp/tools/helm
