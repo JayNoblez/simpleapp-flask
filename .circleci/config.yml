@@ -17,7 +17,7 @@ jobs:
 
       - run:
           name: "Install Kubectl and Helm"
-          command: sh .circleci/kube.sh
+          command: sh .circleci/kube-tools.sh
 
       - save_cache:
           key: v1-kubetools-{{ checksum ".circleci/kube-tools.sh" }}
