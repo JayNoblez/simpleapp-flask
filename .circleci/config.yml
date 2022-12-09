@@ -13,7 +13,7 @@ jobs:
 
       - run:
           name: "Install Kubectl and Helm"
-          command: sh ./kube.sh
+          command: sh .circleci/kube.sh
 
       - restore_cache:
           keys:
